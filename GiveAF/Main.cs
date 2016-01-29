@@ -1,38 +1,49 @@
-﻿using System;
+﻿// -----------------------------------------------------------
+// This program is private software, based on C# source code.
+// To sell or change credits of this software is forbidden,
+// except if someone approves it from GiveAF INC. team.
+// -----------------------------------------------------------
+// Copyrights (c) 2016 GiveAF INC. All rights reserved.
+// -----------------------------------------------------------
+
+#region
+
+using System;
 using System.Threading;
 using System.Windows.Forms;
-
 using Timer = System.Windows.Forms.Timer;
+
+#endregion
 
 // ReSharper disable InvertIf
 
 namespace GiveAF
 {
-    public partial class Main : Form
+    internal sealed partial class Main : Form
     {
-        private readonly Timer timer = new Timer();
+        private readonly Timer _timer = new Timer();
 
         public Main()
         {
             InitializeComponent();
-            timer.Tick += timer_Tick;
+            _timer.Tick += timer_Tick;
         }
 
-        public void AnimateProgBar(int milliSeconds)
+        private void AnimateProgBar(int milliSeconds)
         {
-            if(!timer.Enabled)
+            if (!_timer.Enabled)
             {
                 progressBar1.Value = 0;
-                timer.Interval = milliSeconds / 100;
-                timer.Enabled = true;
+                _timer.Interval = milliSeconds/100;
+                _timer.Enabled = true;
             }
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if(progressBar1.Value == 100)
+            if (progressBar1.Value == 100)
             {
-                timer.Stop();
+                _timer.Stop();
                 progressBar1.Refresh();
                 var t = new Thread(FinishTimer);
                 t.Start();
@@ -46,20 +57,20 @@ namespace GiveAF
                 }
                 else
                 {
-                    timer.Enabled = false;
+                    _timer.Enabled = false;
                 }
             }
         }
 
-        public void FinishTimer()
+        private void FinishTimer()
         {
             Thread.Sleep(1000);
             MessageBox.Show(@"ERROR: Unable to give a fuck.");
             MethodInvoker inv = delegate
             {
-                this.progressBar1.Value = 0;
-                this.progressBar1.Refresh();
-                this.label1.Text = @"No fucks given.";
+                progressBar1.Value = 0;
+                progressBar1.Refresh();
+                label1.Text = @"No fucks given.";
             };
             Invoke(inv);
         }
